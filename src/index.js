@@ -2,18 +2,27 @@ import React from "react";
 import ReactDOM from "react-dom";
 // import withFormik and Yup
 import { withFormik, Form, Field } from "formik";
-import Yup from "yup";
+// import Yup for validation purposes
+import * as Yup from "yup";
 
 // Formik injects a lot of props into your component. Here, we're destructuring the value prop.
 // Formik also gives us handleChange which is what we use instead of writing our own onChange handler. You have to have handleChange to make your form writable.
 // We are also given a handleSubmit function we can pass to our onSubmit listeners. However, we do have to write the middleware for it ourselves down in our withFormik function object that's passed into it.
-const App = ({ values }) => {
+// The errors prop is filled by Yup.
+// There's also a touched prop you can access that tells you if the field has been touched. You can check its value with touched.fieldName
+const App = ({ values, errors, touched }) => {
   return (
     // The Form component is provided by Formik and it doesn't need you to pass in handleSubmit to it. It'll use your handleSubmit function as if we passed it in.
     // Same is true for the Field component, we don't need to pass in the value or onChange handler anymore.
     <Form>
-      <Field type="email" name="email" placeholder="Email" />
-      <Field type="password" name="password" placeholder="Password" />
+      <div>
+        {touched.email && errors.email ? <p>{errors.email}</p> : ""}
+        <Field type="email" name="email" placeholder="Email" />
+      </div>
+      <div>
+        {touched.password && errors.password ? <p>{errors.password}</p> : ""}
+        <Field type="password" name="password" placeholder="Password" />
+      </div>
       <label>
         <Field type="checkbox" name="newsletter" checked={values.newsletter} />
         Join our newsletter
@@ -40,6 +49,16 @@ const FormikApp = withFormik({
       plan: plan || "free"
     };
   },
+  // Creating validation schema using Yup
+  // First, we need to use formik to define our validationSchema property in our formik object. Then, we use Yup.object().shape() and pass in our object with properties to validate. We can use Yup functions to set their validation requirements.
+  validationSchema: Yup.object().shape({
+    email: Yup.string()
+      .email()
+      .required(),
+    password: Yup.string()
+      .min(9)
+      .required()
+  }),
   // The first parameter is the values that are returned from the form inputs.
   handleSubmit(values) {
     console.log(values);

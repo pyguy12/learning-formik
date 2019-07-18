@@ -23,13 +23,17 @@ const App = ({ values, handleChange }) => {
 // Making formik component
 const FormikApp = withFormik({
   // mapPropsToValues maps whats returned in the object from the function to the values property which is then mapped to the props of our original component.
-  mapPropsToValues() {
+  // mapPropsToValues can also be passed props which in this case we have destructured. The prop we passed in was an email prop in the FormikApp component in our render method below.
+  mapPropsToValues({ email }) {
     return {
       // This 'email' key is the same as the name attribute for our input.
-      email: "test text"
+      email: email || ""
     };
   }
 })(App);
 
 // We're actually rendering our whatever is returned from the function that's returned from withFormik.
-ReactDOM.render(<FormikApp />, document.querySelector("#root"));
+ReactDOM.render(
+  <FormikApp email="warren@test.io" />,
+  document.querySelector("#root")
+);

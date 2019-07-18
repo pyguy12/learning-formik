@@ -51,13 +51,14 @@ const FormikApp = withFormik({
   },
   // Creating validation schema using Yup
   // First, we need to use formik to define our validationSchema property in our formik object. Then, we use Yup.object().shape() and pass in our object with properties to validate. We can use Yup functions to set their validation requirements.
+  // For each yup function used for validation, it can take an optional last argument of the error message to be displayed. (What's passed to the errors prop of your component)
   validationSchema: Yup.object().shape({
     email: Yup.string()
-      .email()
+      .email("Email not valid")
       .required(),
-    password: Yup.string()
-      .min(9)
-      .required()
+    password: Yup.string("Email is required")
+      .min(9, "Passowrd must be at least 9 characters long")
+      .required("Password is required")
   }),
   // The first parameter is the values that are returned from the form inputs.
   handleSubmit(values) {
